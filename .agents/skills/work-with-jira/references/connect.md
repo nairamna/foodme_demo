@@ -36,11 +36,14 @@ a token, and never put one in a file.
 5. Check it: ask "list open tickets in KAN". The answer should include
    tickets such as KAN-1 and KAN-2.
 
-## Claude desktop app and claude.ai
+## MCP server, not a plugin or connector
 
-Open **Settings → Connectors**, add **Atlassian**, and sign in the same way.
-If you're signed in to Claude Code with the same claude.ai account, the
-connector may also show up in the CLI's `/mcp` list without the steps above.
+This project connects Jira (and Qase) through the MCP servers in
+`.mcp.json`, not through Claude Code plugins or claude.ai connectors. If
+`/mcp` also lists a `claude.ai Atlassian` connector, or a plugin adds Jira
+tools, disable it so there's one set of Jira tools: the `atlassian` server.
+To keep claude.ai connectors out of the CLI entirely, start it with
+`ENABLE_CLAUDEAI_MCP_SERVERS=false`.
 
 ## If it doesn't work
 

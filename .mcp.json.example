@@ -3,6 +3,24 @@
     "atlassian": {
       "type": "http",
       "url": "https://mcp.atlassian.com/v2/mcp"
+    },
+    "qase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@qase/mcp-server@3.0.6"],
+      "env": {
+        "QASE_API_TOKEN": "${QASE_API_TOKEN}"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.84"]
+    },
+    "agentsecrets": {
+      "type": "stdio",
+      "command": "agentsecrets",
+      "args": ["mcp", "serve"]
     }
   }
 }

@@ -1,6 +1,6 @@
 ---
 name: work-with-jira
-description: Find, read, create, comment on and move FoodMe tickets in Jira (project KAN at naramnacakanyan77.atlassian.net) through the Atlassian MCP connector, using this project's issue types, workflow, labels and ticket templates. Use this whenever a task mentions Jira, a KAN-<number> key, a ticket, an issue or the board, or asks to file a bug, log results, update or close a ticket, or see what's in progress — even if the person doesn't say "Jira". For the full reproduce-fix-verify loop on a bug, use fix-tracked-bug, which calls this skill for its Jira steps.
+description: Find, read, create, comment on and move FoodMe tickets in Jira (project KAN at naramnacakanyan77.atlassian.net) through the project's `atlassian` MCP server, using this project's issue types, workflow, labels and ticket templates. Use this whenever a task mentions Jira, a KAN-<number> key, a ticket, an issue or the board, or asks to file a bug, log results, update or close a ticket, or see what's in progress — even if the person doesn't say "Jira". For the full reproduce-fix-verify loop on a bug, use fix-tracked-bug, which calls this skill for its Jira steps.
 ---
 
 # Work with Jira
@@ -11,11 +11,12 @@ tickets so they stay useful to the people who read them.
 
 ## 1. Check the connection
 
-The Jira tools come from the Atlassian MCP server. Their names end in
-`searchJiraIssuesUsingJql`, `getJiraIssue`, `createJiraIssue`,
-`addOrEditJiraIssueComment`, `transitionJiraIssue` and `editJiraIssue`. The
-prefix depends on how it's connected, for example `mcp__atlassian__` from this
-repo's `.mcp.json`.
+Use the Jira tools from the `atlassian` MCP server in this repo's `.mcp.json`:
+`mcp__atlassian__searchJiraIssuesUsingJql`, `mcp__atlassian__getJiraIssue`,
+`mcp__atlassian__createJiraIssue`, `mcp__atlassian__addOrEditJiraIssueComment`,
+`mcp__atlassian__transitionJiraIssue` and `mcp__atlassian__editJiraIssue`.
+Don't use the same tools from a Claude plugin or a claude.ai connector, even
+if they're available too: the project standardises on its own MCP servers.
 
 If those tools aren't available, don't fall back to the Jira website or REST
 calls with a token. Stop and tell the person how to connect, using

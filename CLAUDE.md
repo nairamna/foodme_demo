@@ -13,7 +13,8 @@
   don't just repeat the one-line result.
 - Put personal Claude Code settings in `.claude/settings.local.json`, which
   git ignores.
-- For Jira, use the `work-with-jira` skill and the Atlassian MCP server
-  (copy `.mcp.json.example` to `.mcp.json`, then sign in from `/mcp`).
+- MCP servers for Jira, Qase, Playwright and AgentSecrets are in
+  `.mcp.json.example`; see "MCP servers" in `AGENTS.md`. For Jira, use the
+  `work-with-jira` skill.
 - To check the live site, use a browser against
   https://foodme-nairamnatsakanyan.onrender.com rather than relying on the code alone.

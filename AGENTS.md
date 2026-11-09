@@ -122,6 +122,25 @@ one-line result, gives the agent the full `summary.md`, and appends the run to
 `test-results/regression/history.md` (git-ignored). Other agents don't run
 it, so read `summary.md` yourself after a regression run.
 
+## MCP servers
+
+`.mcp.json.example` configures four MCP servers. Copy it to `.mcp.json`
+(git-ignored), approve the servers when Claude Code starts, and check them
+with `/mcp`.
+
+| Server | Use it for | Setup |
+|---|---|---|
+| `atlassian` | Jira tickets in project `KAN` (see `work-with-jira`) | Sign in from `/mcp` → atlassian → Authenticate |
+| `qase` | Test cases, runs and results in Qase | Set `QASE_API_TOKEN` in your shell (Qase → Settings → API tokens) |
+| `playwright` | Driving a real browser to explore or reproduce bugs | Nothing; `npx` fetches it |
+| `agentsecrets` | Calling APIs with secrets the agent never sees | Install the `agentsecrets` CLI and run `agentsecrets init` |
+
+- Versions are pinned in the example. Bump them on purpose, not by `@latest`.
+- Never paste a token into `.mcp.json` or a commit. Qase reads its token from
+  your environment, and AgentSecrets keeps secrets in the OS keychain.
+- Explore with Playwright MCP, but anything worth keeping becomes a Playwright
+  test in `e2e/` (see `write-e2e-tests`).
+
 ## Deploying
 
 - Render deploys the service automatically on every push to `main`

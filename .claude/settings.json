@@ -20,6 +20,8 @@
       "Read(./docs/planted-defects.md)"
     ]
   },
+  "enabledMcpjsonServers": ["atlassian", "qase", "playwright", "agentsecrets"],
+  "env": { "ENABLE_CLAUDEAI_MCP_SERVERS": "false" },
   "hooks": {
     "PostToolUse": [
       {
