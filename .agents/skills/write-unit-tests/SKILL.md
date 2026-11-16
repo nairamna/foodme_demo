@@ -74,10 +74,10 @@ Run it from `apps/backend` (needs JDK 17):
 
 ## Web: Vitest
 
-The storefront has no unit test runner yet. The first time you need one, read
-[references/web-vitest-setup.md](references/web-vitest-setup.md) and set it up.
-Adding dev dependencies changes `package.json` and the lockfile for everyone,
-so say you're doing it, and keep the setup in its own commit.
+Vitest and `fake-indexeddb` are set up in `apps/web` (`npm test`). Existing
+tests to copy from: `src/hooks/useCart.test.ts` and `src/lib/utils.test.ts`.
+[references/web-vitest-setup.md](references/web-vitest-setup.md) records how
+it was installed, including an npm workaround.
 
 - Name tests `<file>.test.ts` next to the code, inside `src/`.
 - Import with the `@/` alias, as the app code does.

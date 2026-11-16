@@ -112,13 +112,13 @@ run_playwright() { # suite app-dir grep-file
     args+=(--grep "($pattern)\$")
     local expected listed
     expected="$(grep -Ecv '^[[:space:]]*(#|$)' "$grep_file")"
-    listed="$(cd "$dir" && npx playwright test --list "${args[@]}" 2>/dev/null | grep -c '›')"
+    listed="$(cd "$dir" && npx playwright test --list ${args[@]+"${args[@]}"} 2>/dev/null | grep -c '›')"
     if [ "$listed" != "$expected" ]; then
       echo "WARNING: $suite: $(basename "$grep_file") names $expected tests but $listed matched; a title was renamed or removed." | tee -a "$OUT/warnings.txt"
     fi
   fi
   (cd "$dir" && VITE_API_BASE_URL="$API" PLAYWRIGHT_JSON_OUTPUT_NAME="$report" \
-    npx playwright test --retries=1 --reporter=line,json "${args[@]}") > "$OUT/$suite.log" 2>&1
+    npx playwright test --retries=1 --reporter=line,json ${args[@]+"${args[@]}"}) > "$OUT/$suite.log" 2>&1
   local code=$?
   if [ ! -s "$report" ]; then
     row "$suite" ERROR - - - - "no report written, see $suite.log"; FAILED=1; return
