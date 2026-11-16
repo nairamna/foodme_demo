@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Check, ChefHat, Package, Truck, X } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Ban, Check, ChefHat, Package, Truck, X } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
+import { ApiRequestError } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { formatAmd } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
@@ -29,10 +31,14 @@ const STATUS_COPY: Record<string, { title: string; detail: string }> = {
     title: "Order declined",
     detail: "This order couldn’t be fulfilled. Contact support if you need help.",
   },
+  CANCELLED: {
+    title: "Order cancelled",
+    detail: "You cancelled this order before the kitchen accepted it. Nothing will be prepared.",
+  },
 };
 
 function stepIndex(status: string): number {
-  if (status === "REJECTED") return -1;
+  if (status === "REJECTED" || status === "CANCELLED") return -1;
   const i = STEPS.findIndex((s) => s.key === status);
   return i >= 0 ? i : 0;
 }
@@ -40,11 +46,24 @@ function stepIndex(status: string): number {
 export default function Tracking() {
   const { number } = useParams<{ number: string }>();
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["order", number],
     queryFn: () => foodmeApi.getOrderByNumber(number as string),
     enabled: !!number,
+  });
+
+  const cancelOrder = useMutation({
+    mutationFn: () => foodmeApi.cancelMyOrder(number as string),
+    onSuccess: (order) => {
+      queryClient.setQueryData(["order", number], order);
+      void queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+    },
+    // Refused (e.g. the kitchen accepted meanwhile): show the real status.
+    onError: () => void refetch(),
+    onSettled: () => setConfirmingCancel(false),
   });
 
   if (isLoading) {
@@ -85,7 +104,16 @@ export default function Tracking() {
     detail: "Current status for your order.",
   };
   const active = stepIndex(data.status);
-  const rejected = data.status === "REJECTED";
+  const cancelled = data.status === "CANCELLED";
+  const rejected = data.status === "REJECTED" || cancelled;
+  // Only the signed-in customer who placed it can cancel; the server checks that.
+  const canCancel = isAuthenticated && data.status === "NEW";
+  const cancelError =
+    cancelOrder.error instanceof ApiRequestError && cancelOrder.error.status === 404
+      ? "Only the customer who placed this order can cancel it."
+      : cancelOrder.error
+        ? "This order can no longer be cancelled. The kitchen may have just accepted it."
+        : null;
 
   return (
     <div className="tp_wrap mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
@@ -106,8 +134,13 @@ export default function Tracking() {
         <div className="bezel-inner p-5 md:p-6">
           {rejected ? (
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 ring-1 ring-red-100">
-                <X size={18} strokeWidth={2} />
+              <div
+                className={[
+                  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full ring-1",
+                  cancelled ? "bg-zinc-100 text-zinc-600 ring-zinc-200" : "bg-red-50 text-red-600 ring-red-100",
+                ].join(" ")}
+              >
+                {cancelled ? <Ban size={18} strokeWidth={2} /> : <X size={18} strokeWidth={2} />}
               </div>
               <div>
                 <p className="font-display text-lg font-bold text-zinc-900">{copy.title}</p>
@@ -168,7 +201,54 @@ export default function Tracking() {
                   );
                 })}
               </ol>
+
+              {canCancel && (
+                <div className="mt-6 border-t border-zinc-100 pt-5">
+                  {confirmingCancel ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="w-full text-sm text-zinc-600">
+                        Cancel this order? This can’t be undone.
+                      </p>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="rounded-full"
+                        disabled={cancelOrder.isPending}
+                        onClick={() => cancelOrder.mutate()}
+                      >
+                        {cancelOrder.isPending ? "Cancelling…" : "Yes, cancel order"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full"
+                        disabled={cancelOrder.isPending}
+                        onClick={() => setConfirmingCancel(false)}
+                      >
+                        Keep order
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full"
+                      onClick={() => {
+                        cancelOrder.reset();
+                        setConfirmingCancel(true);
+                      }}
+                    >
+                      Cancel order
+                    </Button>
+                  )}
+                </div>
+              )}
             </>
+          )}
+          {cancelError && (
+            <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {cancelError}
+            </p>
           )}
         </div>
       </div>

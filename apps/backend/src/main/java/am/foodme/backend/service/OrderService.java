@@ -168,6 +168,26 @@ public class OrderService {
         return OrderDto.mapEntityToDto(order);
     }
 
+    /**
+     * Lets a customer cancel their own order while the kitchen hasn't accepted
+     * it yet (status NEW). Someone else's order is reported as not found, so
+     * order numbers can't be probed.
+     */
+    @Transactional
+    public OrderDto cancelForCustomer(String number, String customerEmail) {
+        String email = customerEmail == null ? "" : customerEmail.trim().toLowerCase();
+        Order order = orderRepository.findByNumber(number)
+                .filter(o -> o.getCustomer() != null && email.equalsIgnoreCase(o.getCustomer().getEmail()))
+                .orElseThrow(() -> new NotFoundException("Order " + number + " not found"));
+
+        if (orderRepository.updateStatusIfCurrent(order.getId(), "NEW", "CANCELLED") == 0) {
+            String current = orderRepository.findById(order.getId()).map(Order::getStatus).orElse(order.getStatus());
+            throw new BadRequestException("Order " + number + " can no longer be cancelled (status " + current + ")");
+        }
+        meterRegistry.counter("foodme.orders.cancelled").increment();
+        return OrderDto.mapEntityToDto(orderRepository.findById(order.getId()).orElseThrow());
+    }
+
     @Transactional(readOnly = true)
     public OrderListResponseDto listForCustomer(String customerEmail, int page, int size) {
         Customer customer = customerRepository.findByEmail(customerEmail == null ? "" : customerEmail.trim().toLowerCase())

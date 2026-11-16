@@ -55,11 +55,18 @@ public class AdminOrderService {
         if (allowed == null || !allowed.contains(newStatus)) {
             throw new BadRequestException("Cannot transition order from " + order.getStatus() + " to " + newStatus);
         }
-        order.setStatus(newStatus);
+        // Conditional update: if the customer cancelled after we read the order,
+        // this changes nothing and the transition is refused. CANCELLED has no
+        // entry in ALLOWED_TRANSITIONS, so it is final.
+        if (orderRepository.updateStatusIfCurrent(id, order.getStatus(), newStatus) == 0) {
+            throw new BadRequestException("Order " + id + " changed while updating; reload and try again");
+        }
+        order = findEntity(id);
         if ("REJECTED".equals(newStatus)) {
             order.setRejectReason(rejectReason);
+            order = orderRepository.save(order);
         }
-        return OrderDto.mapEntityToDto(orderRepository.save(order));
+        return OrderDto.mapEntityToDto(order);
     }
 
     private Order findEntity(Long id) {
