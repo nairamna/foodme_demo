@@ -5,14 +5,10 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   unit-testing:
     name: Unit Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -36,7 +32,6 @@ jobs:
   integration-testing:
     name: Integration Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -48,9 +43,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Run integration tests
         working-directory: apps/backend
         run: ./gradlew test --no-daemon
@@ -58,7 +50,21 @@ jobs:
   e2e-testing:
     name: E2E Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: foodme
+          POSTGRES_USER: foodme
+          POSTGRES_PASSWORD: foodme
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U foodme"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - name: Checkout code
@@ -70,6 +76,36 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Build admin app into the backend
+        working-directory: apps/admin
+        run: |
+          npm ci
+          npm run build
+          mkdir -p ../backend/src/main/resources/static/backoffice
+          cp -r dist/. ../backend/src/main/resources/static/backoffice/
+
+      - name: Build backend
+        working-directory: apps/backend
+        run: ./gradlew bootJar --no-daemon
+
+      - name: Start backend
+        working-directory: apps/backend
+        run: |
+          nohup java -jar build/libs/foodme-backend-0.0.1-SNAPSHOT.jar > backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8081/actuator/health > /dev/null; then
+              echo "Backend is up"; exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not start"; cat backend.log; exit 1
 
       - name: Install dependencies
         working-directory: apps/web
@@ -83,27 +119,21 @@ jobs:
         working-directory: apps/web
         run: npm run test:e2e
 
-  # qodana:
-  #   name: Qodana Code Quality
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-
-  #   permissions:
-  #     contents: write
-  #     pull-requests: write
-  #     checks: write
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v5
-  #       with:
-  #         ref: ${{ github.event.pull_request.head.sha }}
-  #         fetch-depth: 0
-
-  #     - name: Qodana Scan
-  #       uses: JetBrains/qodana-action@v2026.2
-  #       with:
-  #         pr-mode: true
-  #       env:
-  #         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_449040557 }}
-  #         QODANA_ENDPOINT: https://qodana.cloud
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # to check out the actual pull request commit, not the merge commit
+          fetch-depth: 0 # a full history is required for pull request analysis
+      - name: "Qodana Scan"
+        uses: JetBrains/qodana-action@v2026.2
+        with:
+          pr-mode: false
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+          QODANA_ENDPOINT: "https://qodana.cloud"
