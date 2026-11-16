@@ -13,8 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check unit tests
-        run: echo "No separate unit tests are currently configured."
+      - name: Check unit tests for web
+        run: npm run test
+        working-directory: apps/web
 
   integration-testing:
     name: Integration Testing
@@ -66,7 +67,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Qodana Scan
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Qodana
         uses: JetBrains/qodana-action@v2025.2
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
