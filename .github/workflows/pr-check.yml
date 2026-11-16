@@ -58,7 +58,24 @@ jobs:
   e2e-testing:
     name: E2E Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+
+    # The e2e tests call a real backend on localhost:8081. It runs here against
+    # Postgres so Flyway applies the same seed data (chefs, dishes, admin) as Render.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: foodme
+          POSTGRES_USER: foodme
+          POSTGRES_PASSWORD: foodme
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U foodme"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - name: Checkout code
@@ -69,7 +86,44 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: apps/web/package-lock.json
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            apps/admin/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # One test opens the back office at /backoffice, which the backend serves
+      # from its static resources, as in the Dockerfile.
+      - name: Build admin app into the backend
+        working-directory: apps/admin
+        run: |
+          npm ci
+          npm run build
+          mkdir -p ../backend/src/main/resources/static/backoffice
+          cp -r dist/. ../backend/src/main/resources/static/backoffice/
+
+      - name: Build backend
+        working-directory: apps/backend
+        run: ./gradlew bootJar --no-daemon
+
+      - name: Start backend
+        working-directory: apps/backend
+        run: |
+          nohup java -jar build/libs/foodme-backend-0.0.1-SNAPSHOT.jar > backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8081/actuator/health > /dev/null; then
+              echo "Backend is up"; exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not start"; cat backend.log; exit 1
 
       - name: Install dependencies
         working-directory: apps/web
@@ -82,6 +136,17 @@ jobs:
       - name: Run E2E tests
         working-directory: apps/web
         run: npm run test:e2e
+
+      - name: Upload backend log and Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            apps/backend/backend.log
+            apps/web/playwright-report/
+            apps/web/test-results/
+          retention-days: 7
 
   qodana:
     runs-on: ubuntu-latest
