@@ -99,8 +99,7 @@ person the full report above, with the failure reasons from the logs.
 
 ## Known gaps
 
-- The storefront has no unit test runner yet, so `web-unit` is skipped until
-  Vitest is set up (see `write-unit-tests`).
+- The admin app has no unit test runner; only its Playwright suite runs.
 
 ## Changing what live mode runs
 

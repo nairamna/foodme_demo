@@ -1,15 +1,19 @@
 # Setting up Vitest in apps/web
 
-Do this once. Check first: if `vitest` is already in `apps/web/package.json`,
-skip this file.
+Done on 2026-11-16: `vitest` and `fake-indexeddb` are in `apps/web/package.json`.
+This file records how, in case it has to be redone.
 
 ## 1. Install
 
 From `apps/web`:
 
 ```bash
-npm i -D vitest fake-indexeddb
+npm i -D vitest@5.0.5 fake-indexeddb@6.2.7 --legacy-peer-deps
 ```
+
+`--legacy-peer-deps` works around an npm 11.5 crash ("Cannot read properties of
+null (reading 'edgesOut')") while it resolves Vitest's optional peers. It's
+only needed for that install: a later plain `npm ci` from the lockfile works.
 
 `fake-indexeddb` gives Node an in-memory IndexedDB, which the Dexie cart in
 `src/lib/db.ts` needs.
