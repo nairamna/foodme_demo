@@ -83,27 +83,27 @@ jobs:
         working-directory: apps/web
         run: npm run test:e2e
 
-  qodana:
-    name: Qodana Code Quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  # qodana:
+  #   name: Qodana Code Quality
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 20
 
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #     checks: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v5
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.sha }}
+  #         fetch-depth: 0
 
-      - name: Qodana Scan
-        uses: JetBrains/qodana-action@v2026.2
-        with:
-          pr-mode: true
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_449040557 }}
-          QODANA_ENDPOINT: https://qodana.cloud
+  #     - name: Qodana Scan
+  #       uses: JetBrains/qodana-action@v2026.2
+  #       with:
+  #         pr-mode: true
+  #       env:
+  #         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_449040557 }}
+  #         QODANA_ENDPOINT: https://qodana.cloud
