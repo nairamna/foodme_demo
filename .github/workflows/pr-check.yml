@@ -1,0 +1,109 @@
+name: PR Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  unit-testing:
+    name: Unit Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Run unit tests
+        working-directory: apps/web
+        run: npm run test -- --run
+
+  integration-testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run integration tests
+        working-directory: apps/backend
+        run: ./gradlew test --no-daemon
+
+  e2e-testing:
+    name: E2E Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        working-directory: apps/web
+        run: npm run test:e2e
+
+  # qodana:
+  #   name: Qodana Code Quality
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 20
+
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #     checks: write
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v5
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.sha }}
+  #         fetch-depth: 0
+
+  #     - name: Qodana Scan
+  #       uses: JetBrains/qodana-action@v2026.2
+  #       with:
+  #         pr-mode: true
+  #       env:
+  #         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_449040557 }}
+  #         QODANA_ENDPOINT: https://qodana.cloud
