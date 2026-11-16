@@ -58,10 +58,8 @@ jobs:
   e2e-testing:
     name: E2E Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
-    # The e2e tests call a real backend on localhost:8081. It runs here against
-    # Postgres so Flyway applies the same seed data (chefs, dishes, admin) as Render.
     services:
       postgres:
         image: postgres:16
@@ -86,9 +84,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: |
-            apps/web/package-lock.json
-            apps/admin/package-lock.json
+          cache-dependency-path: apps/web/package-lock.json
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -99,8 +95,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # One test opens the back office at /backoffice, which the backend serves
-      # from its static resources, as in the Dockerfile.
       - name: Build admin app into the backend
         working-directory: apps/admin
         run: |
@@ -136,17 +130,6 @@ jobs:
       - name: Run E2E tests
         working-directory: apps/web
         run: npm run test:e2e
-
-      - name: Upload backend log and Playwright report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-results
-          path: |
-            apps/backend/backend.log
-            apps/web/playwright-report/
-            apps/web/test-results/
-          retention-days: 7
 
   qodana:
     runs-on: ubuntu-latest
