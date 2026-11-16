@@ -13,6 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: apps/web
+
       - name: Check unit tests for web
         run: npm run test
         working-directory: apps/web
@@ -61,19 +72,20 @@ jobs:
         working-directory: apps/web
 
   qodana:
-    name: Code Static Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v3
         with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Qodana
-        uses: JetBrains/qodana-action@v2025.2
+          ref: ${{ github.event.pull_request.head.sha }} # to check out the actual pull request commit, not the merge commit
+          fetch-depth: 0 # a full history is required for pull request analysis
+      - name: "Qodana Scan"
+        uses: JetBrains/qodana-action@v2026.2
+        with:
+          pr-mode: false
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_449040557 }}
+          QODANA_ENDPOINT: "https://qodana.cloud"
