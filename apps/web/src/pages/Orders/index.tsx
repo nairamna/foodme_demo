@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Package } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
 import { Button } from "@/components/ui/button";
+import { RateOrderDialog } from "@/components/sections/rate-order-dialog";
+import { StarRatingDisplay } from "@/components/sections/star-rating";
 import { useAuth } from "@/providers/auth-provider";
 import { formatAmd } from "@/lib/utils";
+import type { FullOrderDto } from "@/types";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW: "Received",
@@ -34,6 +38,7 @@ function formatOrderDate(value: string) {
 
 export default function Orders() {
   const { isAuthenticated, customer, logout } = useAuth();
+  const [ratingOrder, setRatingOrder] = useState<FullOrderDto | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["my-orders", customer?.id],
@@ -94,37 +99,76 @@ export default function Orders() {
       {data && data.list.length > 0 && (
         <ul className="space-y-3">
           {data.list.map((order) => (
-            <li key={order.number}>
-              <Link
-                to={`/tracking/${order.number}`}
-                className="bezel-outer shadow-diffuse block transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-px active:scale-[0.99]"
-              >
-                <div className="bezel-inner flex items-center gap-4 px-5 py-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-display text-lg font-bold text-zinc-900">
-                        {order.number}
+            <li
+              key={order.number}
+              data-testid={`order-${order.number}`}
+              className="bezel-outer shadow-diffuse transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-px"
+            >
+              <div className="bezel-inner">
+                <Link
+                  to={`/tracking/${order.number}`}
+                  className="block rounded-[inherit] active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-4 px-5 py-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-display text-lg font-bold text-zinc-900">
+                          {order.number}
+                        </p>
+                        <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ${statusClass(order.status)}`}>
+                          {STATUS_LABEL[order.status] ?? order.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 truncate text-sm text-zinc-500">
+                        {order.chefName}
+                        {order.createdAt ? ` · ${formatOrderDate(order.createdAt)}` : ""}
                       </p>
-                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ${statusClass(order.status)}`}>
-                        {STATUS_LABEL[order.status] ?? order.status}
-                      </span>
                     </div>
-                    <p className="mt-1 truncate text-sm text-zinc-500">
-                      {order.chefName}
-                      {order.createdAt ? ` · ${formatOrderDate(order.createdAt)}` : ""}
-                    </p>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="font-semibold tabular-nums text-zinc-900">
+                        {formatAmd(order.totalPrice)}
+                      </span>
+                      <ChevronRight size={16} strokeWidth={2} className="text-zinc-400" />
+                    </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className="font-semibold tabular-nums text-zinc-900">
-                      {formatAmd(order.totalPrice)}
-                    </span>
-                    <ChevronRight size={16} strokeWidth={2} className="text-zinc-400" />
+                </Link>
+                {order.status === "DELIVERED" && (
+                  <div className="flex flex-wrap items-center gap-3 border-t border-zinc-100 px-5 py-3">
+                    {order.review ? (
+                      <>
+                        <StarRatingDisplay rating={order.review.rating} />
+                        {order.review.comment && (
+                          <p className="min-w-0 flex-1 break-words text-sm text-zinc-600">
+                            {order.review.comment}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full"
+                        onClick={() => setRatingOrder(order)}
+                      >
+                        Rate order
+                      </Button>
+                    )}
                   </div>
-                </div>
-              </Link>
+                )}
+              </div>
             </li>
           ))}
         </ul>
+      )}
+
+      {ratingOrder && (
+        <RateOrderDialog
+          order={ratingOrder}
+          open
+          onOpenChange={(open) => {
+            if (!open) setRatingOrder(null);
+          }}
+        />
       )}
     </div>
   );

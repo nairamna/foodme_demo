@@ -72,4 +72,8 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDish> orderDishList;
+
+    /** The customer's rating, once the order is delivered and rated (KAN-9). */
+    @OneToOne(mappedBy = "order")
+    private OrderReview review;
 }
