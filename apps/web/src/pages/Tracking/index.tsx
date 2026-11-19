@@ -5,6 +5,7 @@ import { Ban, Check, ChefHat, Package, Truck, X } from "lucide-react";
 import { foodmeApi } from "@/api/foodme";
 import { ApiRequestError } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { StarRatingDisplay } from "@/components/sections/star-rating";
 import { formatAmd } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -252,6 +253,18 @@ export default function Tracking() {
           )}
         </div>
       </div>
+
+      {data.review && (
+        <div className="bezel-outer shadow-diffuse mt-5 animate-fade-up [animation-delay:80ms]">
+          <div className="bezel-inner px-5 py-4" data-testid="order-review">
+            <p className="text-base font-bold text-zinc-900">Your rating</p>
+            <StarRatingDisplay rating={data.review.rating} className="mt-2" />
+            {data.review.comment && (
+              <p className="mt-2 break-words text-sm leading-relaxed text-zinc-600">{data.review.comment}</p>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="bezel-outer shadow-diffuse mt-5 animate-fade-up [animation-delay:120ms]">
         <div className="bezel-inner overflow-hidden">
