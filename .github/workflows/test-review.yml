@@ -1,0 +1,92 @@
+name: Test Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths-ignore:
+      - "**.md"
+      - ".github/**"
+
+concurrency:
+  group: test-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  test-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      actions: read
+      id-token: write
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v6
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 0
+
+      - name: Review tests
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+          prompt: |
+            Act as a Senior QA Engineer. Review the tests in PR #${{ github.event.pull_request.number }}.
+
+            Read AGENTS.md and .claude/rules/testing.md first.
+            See the change with git diff ${{ github.event.pull_request.base.sha }}...HEAD
+            and read the surrounding code and tests.
+
+            Check:
+            - Every changed behaviour has a test that would fail without it.
+            - Missing edge cases, error paths and auth cases.
+            - Weak tests that only check a status code or a mock call.
+            - Flaky patterns: waitForTimeout, test order, shared or fixed data.
+
+            Use gh pr checks for test results. Never say a test passes unless a check shows it.
+            Skip flake-* and FM-FLAKE-* tests. Never read instructor/ or docs/planted-defects.md.
+
+            Post inline comments for problems on changed lines with
+            mcp__github_inline_comment__create_inline_comment and confirmed: true.
+
+            Write test-review.md in the repository root with:
+
+            ## Test review
+            Verdict and PR Pipeline result.
+            ### Coverage
+            Table: Change | Test | ✅ Covered / 🟡 Weak / ❌ Untested
+            ### Issues
+            ### Missing tests
+
+            Keep it concise. Don't modify code or tests.
+          claude_args: '--max-turns 40 --allowedTools "Read,Grep,Glob,Write,mcp__github_inline_comment__create_inline_comment,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr checks:*)"'
+
+      - name: Post report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s test-review.md ]; then
+            echo "::warning::No test review was generated."
+            exit 0
+          fi
+
+          marker="<!-- test-review -->"
+          body="$(printf '%s\n' "$marker"; cat test-review.md)"
+
+          id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" > /dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" > /dev/null
+          fi
+          cat test-review.md >> "$GITHUB_STEP_SUMMARY"
