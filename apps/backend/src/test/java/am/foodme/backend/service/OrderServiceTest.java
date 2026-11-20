@@ -41,6 +41,7 @@ class OrderServiceTest {
     @Mock private ChefRepository chefRepository;
     @Mock private DishRepository dishRepository;
     @Mock private CustomerRepository customerRepository;
+    @Mock private PromoService promoService;
 
     private SimpleMeterRegistry meterRegistry;
     private OrderService service;
@@ -49,7 +50,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        service = new OrderService(orderRepository, chefRepository, dishRepository, customerRepository, meterRegistry);
+        service = new OrderService(orderRepository, chefRepository, dishRepository, customerRepository, meterRegistry, promoService);
 
         Customer owner = new Customer();
         owner.setId(1L);
