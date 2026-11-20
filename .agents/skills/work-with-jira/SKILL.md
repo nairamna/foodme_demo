@@ -31,10 +31,10 @@ calls with a token. Stop and tell the person how to connect, using
 | Project | `KAN`, named "QA Testing" (team-managed) |
 | Board | https://naramnacakanyan77.atlassian.net/jira/software/projects/KAN/boards/2 |
 | Issue types | Epic, Task, Story, Subtask. **There is no Bug type.** |
-| Statuses | To Do → In Progress → In Review → Done. Any status can move to any other. |
-| Transition IDs | To Do `11`, In Progress `21`, In Review `31`, Done `41` |
+| Statuses | To Do → In Progress → In Review → Testing → Done. Any status can move to any other. |
+| Transition IDs | To Do `11`, In Progress `21`, In Review `31`, Testing `2`, Done `41` |
 
-These were read from the project on 2026-11-06. If a call is rejected because
+These were read from the project on 2026-11-20. If a call is rejected because
 a type, status or transition doesn't exist, the project has changed: read it
 again with `listJiraStatuses` or `listJiraIssueTransitions` and update this table.
 
@@ -128,6 +128,7 @@ check the status in the response.
 |---|---|
 | In Progress | You've started work on it |
 | In Review | The fix is in a pull request, or pushed and waiting for verification |
+| Testing | The work is ready for QA to test |
 | Done | The fix is live **and** verified, and the person asked you to close it |
 | To Do | Work stopped and the ticket is going back to the queue |
 

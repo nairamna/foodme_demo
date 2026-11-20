@@ -32,6 +32,10 @@ jobs:
         run: |
           key=$(printf '%s\n%s\n%s\n' "$TITLE" "$BRANCH" "$BODY" | grep -oE '\bKAN-[0-9]+\b' | head -1 || true)
           echo "key=$key" >> "$GITHUB_OUTPUT"
+          if [ -z "$key" ]; then
+            echo "::error::No Jira key (KAN-123) in the PR title, branch or description."
+            exit 1
+          fi
 
       - name: Checkout PR
         if: steps.jira.outputs.key != ''
@@ -95,6 +99,8 @@ jobs:
             ### Suggested next steps
 
             Keep the report concise. Do not modify application code or tests.
+            End the file with one line: `VERDICT: FAIL` if any requirement is Missing,
+            otherwise `VERDICT: PASS`.
 
           claude_args: '--max-turns 30 --allowedTools "Read,Grep,Glob,Write,Bash(git diff:*),Bash(git log:*),Bash(git show:*)"'
 
@@ -105,18 +111,24 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           if [ ! -s jira-alignment.md ]; then
-            echo "::warning::No report was generated."
-            exit 0
+            echo "::error::No report was generated."
+            exit 1
           fi
 
           marker="<!-- jira-alignment -->"
           body="$(printf '%s\n' "$marker"; cat jira-alignment.md)"
 
-          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+          id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
             --jq '.[] | select(.body | startswith("<!-- jira-alignment -->")) | .id' | head -1)
 
           if [ -n "$id" ]; then
             gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body"
           else
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body"
+          fi
+          # The last VERDICT line is the one that counts.
+          verdict=$(grep -E 'VERDICT:' jira-alignment.md | tail -n 1)
+          if ! printf '%s' "$verdict" | grep -qE 'VERDICT: *PASS'; then
+            echo "::error::A Jira requirement is missing from this PR (or no verdict was given)."
+            exit 1
           fi

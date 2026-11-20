@@ -3,9 +3,6 @@ name: Test Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
-    paths-ignore:
-      - "**.md"
-      - ".github/**"
 
 concurrency:
   group: test-review-${{ github.event.pull_request.number }}
@@ -67,6 +64,8 @@ jobs:
             ### Missing tests
 
             Keep it concise. Don't modify code or tests.
+            End the file with one line: `VERDICT: FAIL` if any change is ❌ Untested or
+            there is a blocker, otherwise `VERDICT: PASS`.
           claude_args: '--max-turns 40 --allowedTools "Read,Grep,Glob,Write,mcp__github_inline_comment__create_inline_comment,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr checks:*),Bash(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments:*)"'
 
       - name: Post report
@@ -76,8 +75,8 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           if [ ! -s test-review.md ]; then
-            echo "::warning::No test review was generated."
-            exit 0
+            echo "::error::No test review was generated."
+            exit 1
           fi
 
           marker="<!-- test-review -->"
@@ -92,3 +91,9 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" > /dev/null
           fi
           cat test-review.md >> "$GITHUB_STEP_SUMMARY"
+          # The last VERDICT line is the one that counts.
+          verdict=$(grep -E 'VERDICT:' test-review.md | tail -n 1)
+          if ! printf '%s' "$verdict" | grep -qE 'VERDICT: *PASS'; then
+            echo "::error::Test review found untested changes or a blocker (or gave no verdict)."
+            exit 1
+          fi

@@ -1,0 +1,7 @@
+requirements: { approved: true, by: "Admin", at: "2026-11-20T14:27:59Z", note: "" }
+plan: { approved: true, by: "Admin", at: "2026-11-20T14:32:48Z", note: "" }
+cases: { approved: true, by: "Admin", at: "2026-11-20T14:44:02Z", note: "judge 04-01 unsure" }
+manual_check: { approved: true, by: "Admin", at: "2026-11-20T15:06:31Z", note: "3 unsure, 2 confirmed, 1 still unsure" }
+tests: { approved: true, by: "Admin", at: "2026-11-20T15:10:34Z", note: "judge 07-01 unsure" }
+report_push: { approved: true, by: "Admin", at: "2026-11-20T15:25:03Z", note: "" }
+issues: { approved: true, by: "Admin", at: "2026-11-20T15:27:40Z", note: "3 approved, 0 rejected" }

@@ -1,0 +1,711 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/24.7.0/bin/node",
+      "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/node_modules/.bin/playwright",
+      "test",
+      "e2e/kan-10-promo-codes.spec.ts",
+      "--reporter=json"
+    ],
+    "configFile": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/playwright.config.ts",
+    "rootDir": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev -- --port 5180",
+      "url": "https://foodme-nairamnatsakanyan.onrender.com",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "kan-10-promo-codes.spec.ts",
+      "file": "kan-10-promo-codes.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Promo codes at checkout (KAN-10)",
+          "file": "kan-10-promo-codes.spec.ts",
+          "line": 49,
+          "column": 6,
+          "specs": [
+            {
+              "title": "KAN-10-TC-01: SAVE10 with a 2,000 AMD subtotal is refused with the missing amount",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10854,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC01/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC01/)\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC01/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC01/)\u001b[22m\n\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:52:5",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                          "column": 68,
+                          "line": 18
+                        },
+                        "snippet": "   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                            "column": 68,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC01/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC01/)\u001b[22m\n\n\n   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:52:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:37.234Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-3c99a-sed-with-the-missing-amount-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                        "column": 68,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-613de68b509d3b93ef15",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-02: SAVE10 at exactly its 3,000 AMD minimum takes 10% of subtotal plus delivery",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 14872,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC02/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC02/)\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC02/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC02/)\u001b[22m\n\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:62:5",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                          "column": 68,
+                          "line": 18
+                        },
+                        "snippet": "   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                            "column": 68,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC02/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC02/)\u001b[22m\n\n\n   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:62:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:37.232Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-39cbf-0-of-subtotal-plus-delivery-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                        "column": 68,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-7c990712e25d7e652b53",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-03: TREAT15 on an 8,550 AMD subtotal rounds the 1,282.5 AMD discount down",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 23520,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    5 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeChecking…Subtotal8,550 AMDDeliveryFreeTotal8,550 AMDPlace order\"\u001b[22m\n\u001b[2m    9 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    5 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeChecking…Subtotal8,550 AMDDeliveryFreeTotal8,550 AMDPlace order\"\u001b[22m\n\u001b[2m    9 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[22m\n\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:77:33",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                          "column": 33,
+                          "line": 77
+                        },
+                        "snippet": "  75 |     await applyCode(page, \"TREAT15\");\n  76 |\n> 77 |     await expect(summary(page)).toContainText(row(\"Discount (TREAT15)\", `−${amd(1282)}`));\n     |                                 ^\n  78 |     await expect(summary(page)).toContainText(row(\"Total\", amd(7268)));\n  79 |   });\n  80 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                            "column": 33,
+                            "line": 77
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    5 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeChecking…Subtotal8,550 AMDDeliveryFreeTotal8,550 AMDPlace order\"\u001b[22m\n\u001b[2m    9 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−1,283 AMDTotal7,267 AMDPlace order\"\u001b[22m\n\n\n  75 |     await applyCode(page, \"TREAT15\");\n  76 |\n> 77 |     await expect(summary(page)).toContainText(row(\"Discount (TREAT15)\", `−${amd(1282)}`));\n     |                                 ^\n  78 |     await expect(summary(page)).toContainText(row(\"Total\", amd(7268)));\n  79 |   });\n  80 |\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:77:33"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:37.236Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-5ca6f-e-1-282-5-AMD-discount-down-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                        "column": 33,
+                        "line": 77
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-f7bb724e5b3db7c72a9f",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-04: Expired code OLD15 is refused",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 14811,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC04/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC04/)\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC04/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC04/)\u001b[22m\n\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:83:5",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                          "column": 68,
+                          "line": 18
+                        },
+                        "snippet": "   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                            "column": 68,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC04/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC04/)\u001b[22m\n\n\n   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:83:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:37.235Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-3c274-pired-code-OLD15-is-refused-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                        "column": 68,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-22ee313eaa36b272041e",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 81,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-05: Unknown code NOPE10 is refused",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 21161,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:49.512Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-e93417938f782d10dd5c",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 91,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-06: Lower-case save10 is treated as an unknown code",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 13653,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC06/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC06/)\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC06/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC06/)\u001b[22m\n\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:103:5",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                          "column": 68,
+                          "line": 18
+                        },
+                        "snippet": "   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                            "column": 68,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Promo TC06/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Promo TC06/)\u001b[22m\n\n\n   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }\n    at createAccountAtCheckout (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts:18:68)\n    at checkoutSignedIn (/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:31:3)\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:103:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:53.546Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-294da--treated-as-an-unknown-code-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/auth.ts",
+                        "column": 68,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-5b3f608c4c0c1e55cf38",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 101,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-07: TREAT15 applied after SAVE10 replaces it instead of adding to it",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 27434,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[22m\n\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:122:33",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                          "column": 33,
+                          "line": 122
+                        },
+                        "snippet": "  120 |\n  121 |     await expect(discountRows(page)).toHaveCount(1);\n> 122 |     await expect(summary(page)).toContainText(row(\"Discount (TREAT15)\", `−${amd(1282)}`));\n      |                                 ^\n  123 |     await expect(summary(page)).toContainText(row(\"Total\", amd(7268)));\n  124 |   });\n  125 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                            "column": 33,
+                            "line": 122
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(TREAT15\\)\\s*−1,282 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items8×Tart with cherry8,000 AMD1×Pie with beans550 AMDPromo codeApplyTREAT15 applied: 15% offSubtotal8,550 AMDDeliveryFreeDiscount (TREAT15)−2,138 AMDTotal6,412 AMDPlace order\"\u001b[22m\n\n\n  120 |\n  121 |     await expect(discountRows(page)).toHaveCount(1);\n> 122 |     await expect(summary(page)).toContainText(row(\"Discount (TREAT15)\", `−${amd(1282)}`));\n      |                                 ^\n  123 |     await expect(summary(page)).toContainText(row(\"Total\", amd(7268)));\n  124 |   });\n  125 |\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:122:33"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:10:53.558Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-da361--it-instead-of-adding-to-it-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                        "column": 33,
+                        "line": 122
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-a2d06183426ca6c43805",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 111,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-08: An expired second code leaves SAVE10 applied",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 24014,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(SAVE10\\)\\s*−350 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(SAVE10\\)\\s*−350 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[22m\n\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:134:33",
+                        "location": {
+                          "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                          "column": 33,
+                          "line": 134
+                        },
+                        "snippet": "  132 |\n  133 |     await expect(page.getByText(\"This code has expired\", { exact: true })).toBeVisible();\n> 134 |     await expect(summary(page)).toContainText(row(\"Discount (SAVE10)\", `−${amd(350)}`));\n      |                                 ^\n  135 |     await expect(summary(page)).toContainText(row(\"Total\", amd(3150)));\n  136 |   });\n  137 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                            "column": 33,
+                            "line": 134
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount \\(SAVE10\\)\\s*−350 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    14 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"Your items3×Tart with cherry3,000 AMDPromo codeApplyThis code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"\u001b[22m\n\n\n  132 |\n  133 |     await expect(page.getByText(\"This code has expired\", { exact: true })).toBeVisible();\n> 134 |     await expect(summary(page)).toContainText(row(\"Discount (SAVE10)\", `−${amd(350)}`));\n      |                                 ^\n  135 |     await expect(summary(page)).toContainText(row(\"Total\", amd(3150)));\n  136 |   });\n  137 |\n    at /Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts:134:33"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:11:02.166Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/test-results/kan-10-promo-codes-Promo-c-066fa--code-leaves-SAVE10-applied-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/nairamnatsakanyan/Documents/foodme_demo/apps/web/e2e/kan-10-promo-codes.spec.ts",
+                        "column": 33,
+                        "line": 134
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-8aae5ead7c27c424f5db",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 126,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-09: Removing SAVE10 brings the total back to the original",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 14515,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:11:07.759Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-e1c01b0a3b6182cfa1c1",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 138,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-10: Switching to Takeaway re-checks SAVE10 and recalculates the discount",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15740,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:11:10.815Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-7b8749fbee38bcd613ca",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 150,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-11: A takeaway order placed with SAVE10 is charged the discounted total",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 14781,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:11:21.537Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-5d4d60aba9355d0867c8",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 161,
+              "column": 3
+            },
+            {
+              "title": "KAN-10-TC-12: A guest at checkout cannot apply SAVE10",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 9422,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-20T15:11:22.414Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca0a14ed8625ce516a25-cc9a10d6b163779cdcaa",
+              "file": "kan-10-promo-codes.spec.ts",
+              "line": 180,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-20T15:10:35.900Z",
+    "duration": 60610.07,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  }
+}

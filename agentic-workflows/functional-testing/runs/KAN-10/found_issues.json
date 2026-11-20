@@ -1,0 +1,122 @@
+{
+  "run": "KAN-10",
+  "sut": "https://foodme-nairamnatsakanyan.onrender.com/",
+  "issues": [
+    {
+      "id": "KAN-10-ISSUE-01",
+      "title": "Bug: TREAT15 gives the wrong discount (1,633 AMD on an 8,550 AMD order, 1,283 for a new customer) instead of 1,282 AMD",
+      "cases": [
+        "KAN-10-TC-03"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-2"
+      ],
+      "expected": "TREAT15 is applied: a discount of 1,282 AMD (15% of 8,550, delivery free, 1,282.5 rounded down) and a new total of 7,268 AMD are shown",
+      "observed": "\"TREAT15 applied: 15% off\"; Subtotal 8,550 AMD, Delivery Free, \"Discount (TREAT15)\" −1,633 AMD, Total 6,917 AMD. Retry (reloaded checkout, applied again): same −1,633 AMD / 6,917 AMD. Step 08 (new customer): received \"Discount (TREAT15)−1,283 AMDTotal7,267 AM\"",
+      "steps": [
+        "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied",
+        "Add 8 × Tart with cherry (1,000 AMD each) to the cart",
+        "Add 1 × Pie with beans (550 AMD) to the cart",
+        "Go to checkout and choose Delivery",
+        "Type TREAT15 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-10-tc-03",
+        "evidence/kan-10-tc-03.png",
+        "results.json: KAN-10-TC-03: Expected pattern: /Discount \\(TREAT15\\)\\s*−1,282 AMD/"
+      ],
+      "observed_at": "2026-11-20T14:53:56Z",
+      "priority": "Highest",
+      "priority_reason": "Money is wrong: the discount differs from the rule (1,633 AMD in 05, 1,283 AMD in 08) and the customer can't avoid it",
+      "status": "filed",
+      "decision": {
+        "by": "Admin",
+        "at": "2026-11-20T15:27:40Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-12",
+        "url": "https://naramnacakanyan77.atlassian.net/browse/KAN-12",
+        "sprint": "failed: No sprint matching \"active\" was found for project KAN."
+      }
+    },
+    {
+      "id": "KAN-10-ISSUE-02",
+      "title": "Bug: lower-case \"save10\" is accepted as SAVE10, with a 1,983 AMD discount on a 3,500 AMD order",
+      "cases": [
+        "KAN-10-TC-06"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-5"
+      ],
+      "expected": "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)",
+      "observed": "no \"Code not found\"; instead \"SAVE10 applied: 10% off\"; Subtotal 3,000 AMD, Delivery 500 AMD, \"Discount (SAVE10)\" −1,983 AMD, Total 1,517 AMD. Retry (reloaded checkout, applied save10 again): same.",
+      "steps": [
+        "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied",
+        "Add 3 × Tart with cherry (1,000 AMD each) to the cart",
+        "Go to checkout and choose Delivery",
+        "Type save10 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-10-tc-06",
+        "evidence/kan-10-tc-06.png",
+        "results.json: KAN-10-TC-06: failed in setup (sign-up), no assertion reached"
+      ],
+      "observed_at": "2026-11-20T14:55:46Z",
+      "priority": "Highest",
+      "priority_reason": "Money is wrong: a code that should be refused gives a 1,983 AMD discount on a 3,500 AMD order",
+      "status": "filed",
+      "decision": {
+        "by": "Admin",
+        "at": "2026-11-20T15:27:40Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-13",
+        "url": "https://naramnacakanyan77.atlassian.net/browse/KAN-13",
+        "sprint": "failed: No sprint matching \"active\" was found for project KAN."
+      }
+    },
+    {
+      "id": "KAN-10-ISSUE-03",
+      "title": "Bug: entering an expired code removes an applied SAVE10 discount",
+      "cases": [
+        "KAN-10-TC-08"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-6"
+      ],
+      "expected": "The page shows \"This code has expired\", and SAVE10 stays applied: the discount is still 350 AMD and the total is still 3,150 AMD",
+      "observed": "after SAVE10: \"SAVE10 applied: 10% off\", \"Discount (SAVE10)\" −4,626 AMD, Total \"-1,126 AMD\" (a negative total). After OLD15: alert \"This code has expired\"; no \"SAVE10 applied\" line, no discount row, Subtotal 3,000 AMD, Delivery 500 AMD, Total 3,500 AMD. Retry (reloaded checkout, SAVE10 then OLD15): same end state, SAVE10 no longer applied. Step 08 (new customer): received \"…This code has expiredSubtotal3,000 AMDDelivery500 AMDAdd 2,000 AMD more for free delivery.Total3,500 AMDPlace order\"",
+      "steps": [
+        "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied",
+        "Add 3 × Tart with cherry (1,000 AMD each) to the cart",
+        "Go to checkout and choose Delivery",
+        "Type SAVE10 in the promo code field and press Apply",
+        "Type OLD15 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-10-tc-08",
+        "evidence/kan-10-tc-08-negative-total.png",
+        "results.json: KAN-10-TC-08: Expected pattern: /Discount \\(SAVE10\\)\\s*−350 AMD/"
+      ],
+      "observed_at": "2026-11-20T14:57:37Z",
+      "priority": "Medium",
+      "priority_reason": "Wrong behaviour at an edge: the customer loses the discount after a mistyped second code, and can apply SAVE10 again",
+      "status": "filed",
+      "decision": {
+        "by": "Admin",
+        "at": "2026-11-20T15:27:40Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-14",
+        "url": "https://naramnacakanyan77.atlassian.net/browse/KAN-14",
+        "sprint": "failed: No sprint matching \"active\" was found for project KAN."
+      }
+    }
+  ]
+}

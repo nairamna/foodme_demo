@@ -1,0 +1,345 @@
+ticket: KAN-10
+sut: https://foodme-nairamnatsakanyan.onrender.com/
+sources:
+  doc: agentic-workflows/functional-testing/runs/KAN-10/sources/KAN-10.md   # word-for-word copy of the KAN-10 description
+  jira: [KAN-10]
+acs:
+  - id: AC-1
+    text: "On the checkout page, the customer can enter a promo code and press Apply."
+    source: KAN-10
+  - id: AC-2
+    text: "A valid code reduces the subtotal by the code's percentage. The discount and the new total are shown before the order is placed."
+    source: KAN-10
+  - id: AC-3
+    text: "A code works only if the subtotal is at least the code's minimum order amount. Otherwise the page shows \"Add {missing amount} AMD more to use this code\"."
+    source: KAN-10
+  - id: AC-4
+    text: "An expired code shows \"This code has expired\"."
+    source: KAN-10
+  - id: AC-5
+    text: "An unknown code shows \"Code not found\"."
+    source: KAN-10
+  - id: AC-6
+    text: "One code per order. Applying a second code replaces the first."
+    source: KAN-10
+  - id: AC-7
+    text: "The customer can remove the applied code, and the total goes back to the original."
+    source: KAN-10
+launch_codes:   # from the ticket's "Launch codes" table, word for word
+  - { code: SAVE10, discount: "10%", minimum_order: "3,000 AMD", status: valid }
+  - { code: TREAT15, discount: "15%", minimum_order: "8,000 AMD", status: valid }
+  - { code: OLD15, discount: "15%", minimum_order: none, status: expired }
+out_of_scope:
+  - "Free-delivery codes"
+  - "Chef-specific codes"
+  - "First-order-only codes"
+questions:
+  - id: Q-1
+    about: [AC-2, AC-7]
+    text: "AC-2 says \"A valid code reduces the subtotal by the code's percentage\" but also \"The discount and the new total are shown\". The total includes the delivery fee. Is the percentage taken from the subtotal only, or from the subtotal plus delivery?"
+    options:
+      - "From the subtotal only; delivery is added in full after the discount"
+      - "From the subtotal plus delivery (the whole total)"
+    answer: "From the subtotal plus delivery (the whole total)"
+    answered_by: "Admin"
+  - id: Q-2
+    about: [AC-2]
+    text: "AC-2 says the code \"reduces the subtotal by the code's percentage\", but the ticket gives no rounding rule. 15% of 8,050 AMD is 1,207.5 AMD. How is a fractional discount shown and charged?"
+    options:
+      - "Rounded to the nearest whole AMD (1,207.5 → 1,208)"
+      - "Rounded down to a whole AMD (1,207.5 → 1,207)"
+      - "Kept with decimals (1,207.5)"
+    answer: "Rounded down to a whole AMD (1,207.5 → 1,207)"
+    answered_by: "Admin"
+  - id: Q-3
+    about: [AC-3]
+    text: "AC-3 says \"Add {missing amount} AMD more to use this code\", and the launch table writes amounts as \"3,000 AMD\". How is {missing amount} formatted, e.g. for 1,200 AMD missing?"
+    options:
+      - "With a thousands comma: \"Add 1,200 AMD more to use this code\""
+      - "Plain digits: \"Add 1200 AMD more to use this code\""
+    answer: "With a thousands comma: \"Add 1,200 AMD more to use this code\""
+    answered_by: "Admin"
+  - id: Q-4
+    about: [AC-6]
+    text: "AC-6 says \"Applying a second code replaces the first\". What happens when the second code is not valid (unknown, expired or below its minimum) while a valid code is applied?"
+    options:
+      - "The first code stays applied, and the error for the second code is shown"
+      - "The first code is removed, and the error for the second code is shown"
+    answer: "The first code stays applied, and the error for the second code is shown"
+    answered_by: "Admin"
+  - id: Q-5
+    about: [AC-2, AC-3]
+    text: "AC-3 says \"A code works only if the subtotal is at least the code's minimum order amount\", but no AC says what happens to an applied code when the cart changes afterwards, e.g. the subtotal drops below the minimum or the delivery method changes. What should the page do?"
+    options:
+      - "Re-check the code: below the minimum it stops applying and shows the AC-3 message; otherwise the discount is recalculated"
+      - "Keep the discount as it was applied"
+      - "Out of scope for this test run"
+    answer: "Re-check the code: below the minimum it stops applying and shows the AC-3 message; otherwise the discount is recalculated"
+    answered_by: "Admin"
+  - id: Q-6
+    about: [AC-1, AC-5]
+    text: "The launch codes are written in capitals (\"SAVE10\"). AC-5 says \"An unknown code shows \"Code not found\"\". Is \"save10\" (lower case) or \" SAVE10 \" (with spaces) the same code, or an unknown one?"
+    options:
+      - "Case and surrounding spaces are ignored: \"save10\" works like SAVE10"
+      - "Codes must match exactly: \"save10\" shows \"Code not found\""
+    answer: "Codes must match exactly: \"save10\" shows \"Code not found\""
+    answered_by: "Admin"
+  - id: Q-7
+    about: [AC-2]
+    text: "AC-2 says \"The discount and the new total are shown before the order is placed\", but doesn't say what the placed order records. Should a test check that the placed order is charged the discounted total?"
+    options:
+      - "Yes: the placed order's total equals the discounted total shown at checkout"
+      - "No: only the checkout page before placing the order is in scope"
+    answer: "Yes: the placed order's total equals the discounted total shown at checkout"
+    answered_by: "Admin"
+  - id: Q-8
+    about: [AC-1]
+    text: "AC-1 says \"the customer can enter a promo code and press Apply\". Must the customer be signed in to apply a code, or can a guest at checkout apply one too?"
+    options:
+      - "Only signed-in customers can apply a code"
+      - "Guests and signed-in customers can both apply a code"
+    answer: "Only signed-in customers can apply a code"
+    answered_by: "Admin"
+test_cases:
+  - id: KAN-10-TC-01
+    title: "SAVE10 with a 2,000 AMD subtotal is refused with the missing amount"
+    covers: [AC-3]
+    blocked_by: [Q-3]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 2 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+    expected: "The page shows \"Add 1,000 AMD more to use this code\"; no discount is applied and the total stays 2,500 AMD (2,000 + 500 delivery)"
+    expected_source: Q-3
+    status: automated
+    spec: "KAN-10-TC-01: SAVE10 with a 2,000 AMD subtotal is refused with the missing amount"
+    qase_id: 1
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-01
+  - id: KAN-10-TC-02
+    title: "SAVE10 at exactly its 3,000 AMD minimum takes 10% of subtotal plus delivery"
+    covers: [AC-1, AC-2, AC-3]
+    blocked_by: [Q-1]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+    expected: "SAVE10 is applied: a discount of 350 AMD (10% of 3,000 + 500 delivery) and a new total of 3,150 AMD are shown"
+    expected_source: Q-1
+    status: automated
+    spec: "KAN-10-TC-02: SAVE10 at exactly its 3,000 AMD minimum takes 10% of subtotal plus delivery"
+    qase_id: 2
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-02
+  - id: KAN-10-TC-03
+    title: "TREAT15 on an 8,550 AMD subtotal rounds the 1,282.5 AMD discount down"
+    covers: [AC-2]
+    blocked_by: [Q-1, Q-2]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 8 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Add 1 × Pie with beans (550 AMD) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type TREAT15 in the promo code field and press Apply"
+    expected: "TREAT15 is applied: a discount of 1,282 AMD (15% of 8,550, delivery free, 1,282.5 rounded down) and a new total of 7,268 AMD are shown"
+    expected_source: Q-2
+    status: automated
+    spec: "KAN-10-TC-03: TREAT15 on an 8,550 AMD subtotal rounds the 1,282.5 AMD discount down"
+    qase_id: 3
+    execution:
+      result: mismatch
+      confidence: unsure
+      unsure_reason: "Discount 1,633 AMD (= 1,283 + TC-02's 350) instead of 1,282; may come from server state left by TC-02's SAVE10 for the same customer"
+      log: execution.md#kan-10-tc-03
+      human_check:
+        result: mismatch
+        by: Admin
+        at: 2026-11-20T15:06:31Z
+        note: ""
+  - id: KAN-10-TC-04
+    title: "Expired code OLD15 is refused"
+    covers: [AC-4]
+    blocked_by: []
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type OLD15 in the promo code field and press Apply"
+    expected: "The page shows \"This code has expired\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: AC-4
+    status: automated
+    spec: "KAN-10-TC-04: Expired code OLD15 is refused"
+    qase_id: 4
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-04
+  - id: KAN-10-TC-05
+    title: "Unknown code NOPE10 is refused"
+    covers: [AC-5]
+    blocked_by: []
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type NOPE10 in the promo code field and press Apply"
+    expected: "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: AC-5
+    status: automated
+    spec: "KAN-10-TC-05: Unknown code NOPE10 is refused"
+    qase_id: 5
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-05
+  - id: KAN-10-TC-06
+    title: "Lower-case save10 is treated as an unknown code"
+    covers: [AC-5]
+    blocked_by: [Q-6]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type save10 in the promo code field and press Apply"
+    expected: "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: Q-6
+    status: automated
+    spec: "KAN-10-TC-06: Lower-case save10 is treated as an unknown code"
+    qase_id: 6
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-10-tc-06
+  - id: KAN-10-TC-07
+    title: "TREAT15 applied after SAVE10 replaces it instead of adding to it"
+    covers: [AC-6]
+    blocked_by: [Q-1, Q-2]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 8 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Add 1 × Pie with beans (550 AMD) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+      - "Type TREAT15 in the promo code field and press Apply"
+    expected: "Only TREAT15 is applied: the discount is 1,282 AMD (15% of 8,550, rounded down), not 2,137 AMD, and the new total is 7,268 AMD"
+    expected_source: AC-6
+    status: automated
+    spec: "KAN-10-TC-07: TREAT15 applied after SAVE10 replaces it instead of adding to it"
+    qase_id: 7
+    execution:
+      result: mismatch
+      confidence: unsure
+      unsure_reason: "Discount −2,138 AMD (855 + 1,283), retry −4,276 AMD; expected 1,282; value depends on server state for this customer"
+      log: execution.md#kan-10-tc-07
+      human_check:
+        result: unsure
+        by: Admin
+        at: 2026-11-20T15:06:31Z
+        note: ""
+  - id: KAN-10-TC-08
+    title: "An expired second code leaves SAVE10 applied"
+    covers: [AC-6]
+    blocked_by: [Q-1, Q-4]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+      - "Type OLD15 in the promo code field and press Apply"
+    expected: "The page shows \"This code has expired\", and SAVE10 stays applied: the discount is still 350 AMD and the total is still 3,150 AMD"
+    expected_source: Q-4
+    status: automated
+    spec: "KAN-10-TC-08: An expired second code leaves SAVE10 applied"
+    qase_id: 8
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-10-tc-08
+  - id: KAN-10-TC-09
+    title: "Removing SAVE10 brings the total back to the original"
+    covers: [AC-7]
+    blocked_by: [Q-1]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+      - "Remove the applied promo code"
+    expected: "No code is applied, no discount is shown, and the total is back to 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: AC-7
+    status: automated
+    spec: "KAN-10-TC-09: Removing SAVE10 brings the total back to the original"
+    qase_id: 9
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-09
+  - id: KAN-10-TC-10
+    title: "Switching to Takeaway re-checks SAVE10 and recalculates the discount"
+    covers: [AC-2]
+    blocked_by: [Q-1, Q-5]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Type SAVE10 in the promo code field and press Apply"
+      - "Change the delivery method to Takeaway"
+    expected: "SAVE10 stays applied with the discount recalculated: a discount of 300 AMD (10% of 3,000, no delivery fee) and a new total of 2,700 AMD"
+    expected_source: Q-5
+    status: automated
+    spec: "KAN-10-TC-10: Switching to Takeaway re-checks SAVE10 and recalculates the discount"
+    qase_id: 10
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-10
+  - id: KAN-10-TC-11
+    title: "A takeaway order placed with SAVE10 is charged the discounted total"
+    covers: [AC-2]
+    blocked_by: [Q-1, Q-7]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed in as a customer, with an empty cart and no promo code applied"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Takeaway"
+      - "Type SAVE10 in the promo code field and press Apply"
+      - "Fill in the receiver's name, phone and email, put STLC KAN-10 KAN-10-TC-11 in the order note, and place the order"
+      - "Open the placed order's details (Track order)"
+    expected: "Checkout shows a discount of 300 AMD and a total of 2,700 AMD before placing, and the placed order's total is 2,700 AMD"
+    expected_source: Q-7
+    status: automated
+    spec: "KAN-10-TC-11: A takeaway order placed with SAVE10 is charged the discounted total"
+    qase_id: 11
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-10-tc-11
+  - id: KAN-10-TC-12
+    title: "A guest at checkout cannot apply SAVE10"
+    covers: [AC-1]
+    blocked_by: [Q-8]
+    steps:
+      - "Open https://foodme-nairamnatsakanyan.onrender.com/chef/17 (Chef Verona: delivery fee 500 AMD, free delivery from a 5,000 AMD subtotal), signed out, with an empty cart"
+      - "Add 3 × Tart with cherry (1,000 AMD each) to the cart"
+      - "Go to checkout and choose Delivery"
+      - "Try to type SAVE10 in the promo code field and press Apply"
+    expected: "No discount is applied while signed out; the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: Q-8
+    status: automated
+    spec: "KAN-10-TC-12: A guest at checkout cannot apply SAVE10"
+    qase_id: 12
+    execution:
+      result: match
+      confidence: unsure
+      unsure_reason: "Guest checkout shows only a sign-in panel: no promo field (so no discount), but no total on the page; 3,500 AMD seen only in the chef page's cart"
+      log: execution.md#kan-10-tc-12
+      human_check:
+        result: match
+        by: Admin
+        at: 2026-11-20T15:06:31Z
+        note: ""

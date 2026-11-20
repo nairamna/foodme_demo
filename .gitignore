@@ -68,3 +68,6 @@ infra/docker-compose.local.yml
 .env.development
 .env.staging
 .env.production
+
+# Playwright MCP snapshots and console logs
+.playwright-mcp/

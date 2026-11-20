@@ -3,10 +3,6 @@ name: Mutation Testing
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "apps/backend/src/main/**"
-      - "apps/web/src/**"
-      - ".github/workflows/mutation-testing.yml"
   workflow_dispatch:
 
 concurrency:
@@ -14,8 +10,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Did backend or web code change?
+        id: diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "pull_request" ] || \
+             git diff --name-only "$BASE...$HEAD" -- apps/backend/src/main apps/web/src | grep -q .; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No backend or web code changed, so there is nothing to mutate."
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+
   mutation-testing:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    needs: changes
+    if: needs.changes.outputs.code == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
